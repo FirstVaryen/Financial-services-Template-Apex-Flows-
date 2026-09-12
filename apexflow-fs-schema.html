@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apexflow — Financial Services Data Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12201A;
+    --bg-panel:#182920;
+    --bg-panel-alt:#1E3327;
+    --gold:#CDA153;
+    --rust:#A8532F;
+    --text:#F4F1E8;
+    --text-muted:#9FB0A5;
+    --line:rgba(244,241,232,0.16);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;}
+  body{padding:56px 24px 90px;}
+  .wrap{max-width:1180px;margin:0 auto;}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+  h1{font-family:'Fraunces',serif;font-weight:500;font-size:40px;line-height:1.08;margin:0 0 10px;letter-spacing:-0.01em;}
+  h1 em{font-style:italic;color:var(--gold);}
+  .sub{color:var(--text-muted);font-size:15.5px;max-width:68ch;line-height:1.55;margin:0 0 12px;}
+  .legend{display:flex;gap:26px;flex-wrap:wrap;margin:22px 0 40px;font-size:12.5px;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
+  .legend span{display:inline-flex;align-items:center;gap:8px;}
+  .swatch{width:22px;height:0;border-top:2px solid var(--gold);}
+  .swatch.dash{border-top:2px dashed var(--rust);}
+
+  .diagram-scroll{overflow-x:auto;padding-bottom:10px;}
+  .diagram{
+    position:relative;width:1200px;aspect-ratio:1200/920;margin:0 auto;
+  }
+  svg{position:absolute;top:0;left:0;width:100%;height:100%;}
+
+  .card{
+    position:absolute;background:var(--bg-panel);border:1px solid var(--line);
+    border-radius:4px;overflow:hidden;
+  }
+  .card .hd{
+    background:var(--bg-panel-alt);padding:9px 14px;border-bottom:1px solid var(--line);
+    display:flex;align-items:baseline;justify-content:space-between;gap:8px;
+  }
+  .card .hd .name{font-family:'Fraunces',serif;font-size:15.5px;font-weight:500;}
+  .card .hd .tag{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--gold);letter-spacing:.04em;white-space:nowrap;}
+  .card .fields{padding:8px 14px 12px;font-size:11.5px;line-height:1.8;color:var(--text-muted);font-family:'IBM Plex Mono',monospace;}
+  .card .fields b{color:var(--text);font-weight:500;}
+
+  .field-appendix{margin-top:70px;}
+  .field-appendix h2{font-family:'Fraunces',serif;font-weight:500;font-size:24px;margin-bottom:6px;}
+  .field-appendix p{color:var(--text-muted);font-size:14px;max-width:70ch;line-height:1.6;margin-bottom:26px;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin-bottom:34px;}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--line);}
+  th{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--gold);font-weight:500;}
+  td.obj{font-family:'Fraunces',serif;font-size:15px;color:var(--gold);}
+  td{color:var(--text-muted);}
+  td b{color:var(--text);font-weight:500;}
+
+  .callout{background:var(--bg-panel);border:1px solid var(--line);border-left:3px solid var(--gold);border-radius:0 4px 4px 0;padding:16px 20px;margin:30px 0;font-size:14px;color:var(--text-muted);line-height:1.6;}
+  .callout b{color:var(--text);}
+
+  footer{margin-top:50px;color:var(--text-muted);font-size:12.5px;border-top:1px solid var(--line);padding-top:18px;}
+  footer b{color:var(--text);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Apexflow · Reference Schema</div>
+  <h1>Financial Services<br><em>Data Model</em></h1>
+  <p class="sub">The object schema for the Financial Services App Template — built from scratch as SFDX metadata, for Abuja investment firms and microfinance banks. Solid lines are structural (master-detail) relationships; dashed lines are lookups.</p>
+
+  <div class="legend">
+    <span><span class="swatch"></span> master-detail (structural)</span>
+    <span><span class="swatch dash"></span> lookup (reference)</span>
+  </div>
+
+  <div class="diagram-scroll">
+  <div class="diagram">
+    <svg viewBox="0 0 1200 920" preserveAspectRatio="none">
+      <defs>
+        <marker id="arrowGold" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#CDA153"/>
+        </marker>
+        <marker id="arrowRust" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" fill="#A8532F"/>
+        </marker>
+      </defs>
+
+      <!-- Account -> Relationship Manager -->
+      <path d="M330,130 L200,190" stroke="#CDA153" stroke-width="1.5" fill="none" marker-end="url(#arrowGold)"/>
+      <!-- Account -> Contact -->
+      <path d="M420,130 L850,190" stroke="#CDA153" stroke-width="1.5" fill="none" marker-end="url(#arrowGold)"/>
+
+      <!-- Relationship Manager -> Investment -->
+      <path d="M220,320 L370,390" stroke="#CDA153" stroke-width="1.5" fill="none" marker-end="url(#arrowGold)"/>
+      <!-- Relationship Manager -> Loan -->
+      <path d="M260,320 L740,390" stroke="#CDA153" stroke-width="1.5" fill="none" marker-end="url(#arrowGold)"/>
+
+      <!-- Financial Product -> Investment (master-detail) -->
+      <path d="M560,190 L440,390" stroke="#CDA153" stroke-width="1.8" fill="none" marker-end="url(#arrowGold)"/>
+      <!-- Financial Product -> Loan (master-detail) -->
+      <path d="M650,190 L780,390" stroke="#CDA153" stroke-width="1.8" fill="none" marker-end="url(#arrowGold)"/>
+
+      <!-- Contact -> Investment (lookup, client) -->
+      <path d="M870,320 L470,390" stroke="#A8532F" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#arrowRust)"/>
+      <!-- Contact -> Loan (lookup, borrower) -->
+      <path d="M900,320 L810,390" stroke="#A8532F" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#arrowRust)"/>
+      <!-- Contact -> Loan (lookup, guarantor) -->
+      <path d="M960,320 L850,390" stroke="#A8532F" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#arrowRust)"/>
+      <!-- Contact -> Compliance Document (lookup) -->
+      <path d="M950,320 L980,600" stroke="#A8532F" stroke-width="1.4" stroke-dasharray="5 4" fill="none" marker-end="url(#arrowRust)"/>
+
+      <!-- Loan -> Repayment (master-detail) -->
+      <path d="M780,530 L620,600" stroke="#CDA153" stroke-width="1.8" fill="none" marker-end="url(#arrowGold)"/>
+    </svg>
+
+    <!-- Account -->
+    <div class="card" style="left:27.5%;top:2.5%;width:20.8%;">
+      <div class="hd"><span class="name">Account</span><span class="tag">FIRM</span></div>
+      <div class="fields">
+        Account Name<br>
+        <b>Institution_Type__c</b> — Investment Firm / MFB / Both<br>
+        <b>CBN_License_Number__c</b>
+      </div>
+    </div>
+
+    <!-- Financial Product -->
+    <div class="card" style="left:44%;top:2.5%;width:21%;">
+      <div class="hd"><span class="name">Financial_<br>Product__c</span><span class="tag">CATALOG</span></div>
+      <div class="fields">
+        Product Name<br>
+        <b>Product_Category__c</b> — Investment / Loan<br>
+        <b>Product_Type__c</b> · <b>Interest_Rate__c</b><br>
+        Minimum Amount · Tenor · Active
+      </div>
+    </div>
+
+    <!-- Relationship Manager -->
+    <div class="card" style="left:8%;top:23.5%;width:20%;">
+      <div class="hd"><span class="name">Relationship_<br>Manager__c</span><span class="tag">STAFF</span></div>
+      <div class="fields">
+        RM Name<br>
+        <b>Branch__c</b> → Account<br>
+        <b>Staff_ID__c</b><br>
+        Phone · Email · Portfolio Target
+      </div>
+    </div>
+
+    <!-- Contact -->
+    <div class="card" style="left:68%;top:23.5%;width:21%;">
+      <div class="hd"><span class="name">Contact</span><span class="tag">CLIENT</span></div>
+      <div class="fields">
+        Name<br>
+        Account (lookup)<br>
+        <b>BVN__c</b> · <b>Risk_Profile__c</b><br>
+        Annual Income Bracket
+      </div>
+    </div>
+
+    <!-- Investment -->
+    <div class="card" style="left:29%;top:42.5%;width:20.5%;">
+      <div class="hd"><span class="name">Investment__c</span><span class="tag">HOLDING</span></div>
+      <div class="fields">
+        Product → (master-detail)<br>
+        Client · Relationship Manager (lookups)<br>
+        Principal · Start Date<br>
+        <b>Maturity_Date__c</b> · Expected Return<br>
+        <b>Status__c</b>
+      </div>
+    </div>
+
+    <!-- Loan -->
+    <div class="card" style="left:60%;top:42.5%;width:20.5%;">
+      <div class="hd"><span class="name">Loan__c</span><span class="tag">HOLDING</span></div>
+      <div class="fields">
+        Product → (master-detail)<br>
+        Client · Guarantor · Relationship Manager<br>
+        Principal · Disbursement Date · Tenor<br>
+        <b>Outstanding_Balance__c</b> · <b>Status__c</b>
+      </div>
+    </div>
+
+    <!-- Repayment -->
+    <div class="card" style="left:44%;top:63%;width:20.5%;">
+      <div class="hd"><span class="name">Repayment__c</span><span class="tag">SCHEDULE</span></div>
+      <div class="fields">
+        Loan → (master-detail)<br>
+        <b>Due_Date__c</b> · Amount Due<br>
+        Amount Paid · <b>Status__c</b>
+      </div>
+    </div>
+
+    <!-- Compliance Document -->
+    <div class="card" style="left:76%;top:63%;width:20.5%;">
+      <div class="hd"><span class="name">Compliance_<br>Document__c</span><span class="tag">KYC</span></div>
+      <div class="fields">
+        Client (lookup)<br>
+        <b>Document_Type__c</b> — BVN Slip, ID, Board Res.<br>
+        <b>Status__c</b> · Verified By
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="callout">
+    <b>Why Investment and Loan are separate objects, not one with a Type field:</b> an investment matures once and pays out; a loan disburses once and repays over a schedule of installments, with its own risk states (In Arrears, Defaulted) that an investment never has. Forcing both into one object means half the fields on every record are meaningless. Splitting them also means a client who only signs up for lending never has to deploy or look at Investment__c at all — see the build guide's Part 15 for how that plays out at deploy time.
+  </div>
+
+  <div class="field-appendix">
+    <h2>Relationship reference</h2>
+    <p>Read alongside the diagram above — this table spells out each connection's type and direction for anyone building or reviewing the org outside the visual.</p>
+    <table>
+      <tr><th>From</th><th>To</th><th>Type</th><th>Meaning</th></tr>
+      <tr><td class="obj">Account</td><td><b>Relationship_Manager__c</b></td><td>Lookup, 1:Many</td><td>A firm/branch employs many relationship managers</td></tr>
+      <tr><td class="obj">Account</td><td><b>Contact</b></td><td>Lookup, 1:Many</td><td>An account has many associated clients</td></tr>
+      <tr><td class="obj">Relationship_Manager__c</td><td><b>Investment__c</b></td><td>Lookup, 1:Many</td><td>An RM manages many client investments</td></tr>
+      <tr><td class="obj">Relationship_Manager__c</td><td><b>Loan__c</b></td><td>Lookup, 1:Many</td><td>An RM manages many client loans</td></tr>
+      <tr><td class="obj">Financial_Product__c</td><td><b>Investment__c</b></td><td>Master-Detail, 1:Many</td><td>A product has many client holdings against it</td></tr>
+      <tr><td class="obj">Financial_Product__c</td><td><b>Loan__c</b></td><td>Master-Detail, 1:Many</td><td>A loan product has many disbursed loans against it</td></tr>
+      <tr><td class="obj">Contact</td><td><b>Investment__c</b></td><td>Lookup, 1:Many</td><td>A client can hold multiple investments over time</td></tr>
+      <tr><td class="obj">Contact</td><td><b>Loan__c</b></td><td>Lookup, 1:Many</td><td>A client can be the borrower on multiple loans</td></tr>
+      <tr><td class="obj">Contact</td><td><b>Loan__c</b></td><td>Lookup, 1:Many</td><td>A client can separately stand as guarantor on a loan that isn't theirs</td></tr>
+      <tr><td class="obj">Contact</td><td><b>Compliance_Document__c</b></td><td>Lookup, 1:Many</td><td>A client has many KYC documents on file</td></tr>
+      <tr><td class="obj">Loan__c</td><td><b>Repayment__c</b></td><td>Master-Detail, 1:Many</td><td>A loan has many scheduled installment repayments</td></tr>
+    </table>
+  </div>
+
+  <footer>
+    <b>Apexflow</b> — reference schema for the Financial Services App Template. Pair with <b>apexflow-fs-beginner-build-guide.md</b> for the build sequence.
+  </footer>
+</div>
+</body>
+</html>
